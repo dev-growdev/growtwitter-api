@@ -43,8 +43,16 @@ class RetweetController extends Controller
         //
     }
 
-    public function destroy(Retweet $retweet)
+    public function destroy(Request $id)
     {
-        //
+        try {
+            $retweet = Retweet::findOrFail($id);
+            $retweet->delete();
+
+
+            return response()->json(['success' => true, 'msg' => 'Retweet nº ' . $id . ' excluído com sucesso!']);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'msg' => $th->getMessage()], 400);
+        }
     }
 }
