@@ -8,3 +8,4 @@
     - [LikeController](/{{route}}/{{version}}/like-controller)
     - [FollowerController](/{{route}}/{{version}}/follower-controller)
     - [RetweetController](/{{route}}/{{version}}/retweet-controller)
+    - [CommentController](/{{route}}/{{version}}/comment-controller)
