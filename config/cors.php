@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['*', 'https://develop.di2dciudu7zky.amplifyapp.com'],
 
     'allowed_origins_patterns' => [],
 
