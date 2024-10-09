@@ -22,7 +22,7 @@ class CustomThrottleMiddleware
         $key = $request->ip();
 
         if ($this->rateLimiter->tooManyAttempts($key, $maxAttempts)) {
-            return response()->json(['success' => false, 'msg' => 'Muitas tentativas.', Response::HTTP_TOO_MANY_REQUESTS]);
+            return response()->json(['success' => false, 'msg' => 'Muitas tentativas.'], Response::HTTP_TOO_MANY_REQUESTS);
         }
 
         $this->rateLimiter->hit($key, $decayMinutes = 60);
