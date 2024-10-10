@@ -19,10 +19,10 @@ class HomeController extends Controller
             }
         ])
             ->withCount('likes', 'comments')
-            ->latest()->get();
+            ->latest()->get()->paginate(20);
 
 
-        $retweets = Retweet::with(['user', 'post'])->latest()->get();
+        $retweets = Retweet::with(['user', 'post'])->latest()->get()->paginate(20);
         return response()->json([
             'success' => true,
             'data' => [
