@@ -35,7 +35,9 @@ class ProfileController extends Controller
 
 
 
-            $retweets = Retweet::with(['user', 'post'])->latest()->paginate(20);
+            $retweets = Retweet::with(['user', 'post' => function ($query) {
+                $query->with('user');
+            }])->latest()->paginate(20);
 
 
             return response()->json([
