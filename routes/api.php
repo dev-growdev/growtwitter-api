@@ -12,12 +12,12 @@ use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('throttle:10, 1')->group(function() {
+Route::middleware(['throttle:10, 1', 'web'])->group(function () {
     Route::post('/users', [UserController::class, 'store']); // registrar
     Route::post('/login', [AuthController::class, 'store']); // logar
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'web'])->group(function () {
     Route::apiResource('/users', UserController::class)->except('store');
     Route::delete('/logout', [AuthController::class, 'destroy']);
     Route::resource('/posts', PostController::class);
