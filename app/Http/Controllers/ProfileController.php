@@ -18,24 +18,31 @@ class ProfileController extends Controller
             $osQueEuSigo = Follower::where('followerId', $id)->count();
             $quemSegueEle = Follower::where('followingId', $id)->count();
 
-            $osQueEuSigoData = Follower::with('follower', 'following', 'posts')->where('followerId', $id)->get();
-            $quemSegueEleData = Follower::with('following', 'follower', 'posts')->where('followingId', $id)->get();
+            $osQueEuSigoData = Follower::with('follower', 'following', 'posts')->where('followerId', $id)->paginate(20);
+            $quemSegueEleData = Follower::with('following', 'follower', 'posts')->where('followingId', $id)->paginate(20);
 
             $posts = Post::with([
                 'user:id,username,name,avatar_url',
                 'likes',
                 'retweets',
                 'comments' => function ($query) {
-                    $query->with('user');
+                    $query->with('user'); // carregar o usuário que fez o comentário
                 }
             ])
                 ->withCount('likes', 'comments')
-                ->latest()
-                ->get();
+                ->latest()->paginate(20);
 
 
-
-            $retweets = Retweet::with(['user', 'post'])->latest()->get();
+            $retweets = Retweet::with(['user', 'post' => function ($query) {
+                $query->with([
+                    'user:id,username,name,avatar_url',
+                    'likes',
+                    'retweets',
+                    'comments' => function ($query) {
+                        $query->with('user'); // carregar o usuário que fez o comentário
+                    }
+                ])->withCount('likes', 'comments');
+            }])->latest()->paginate(20);
 
 
             return response()->json([
