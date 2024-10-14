@@ -32,6 +32,7 @@ class HomeController extends Controller
                 }
             ])->withCount('likes', 'comments');
         }])->latest()->paginate(20);
+
         return response()->json([
             'success' => true,
             'data' => [
