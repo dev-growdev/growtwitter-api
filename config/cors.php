@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['FRONTEND_URL', 'http://localhost:5173'],
+    'allowed_origins' => ['https://develop.di2dciudu7zky.amplifyapp.com'],
 
     'allowed_origins_patterns' => [],
 
