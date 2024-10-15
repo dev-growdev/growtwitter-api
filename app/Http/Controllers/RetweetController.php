@@ -30,7 +30,6 @@ class RetweetController extends Controller
             "content" => $request->content
         ]);
         return response()->json(['success' => true, 'msg' => 'Retweetado com sucesso!', 'data' => $retweet], 201);
-
     }
 
     public function show(Retweet $retweet)
@@ -43,8 +42,17 @@ class RetweetController extends Controller
         //
     }
 
-    public function destroy(Retweet $retweet)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $retweet = Retweet::where('id', $id)->first();
+
+            if ($retweet) {
+                $retweet->delete();
+                return response()->json(['msg' => "Retweet $retweet->id excluído"], 200);
+            }
+        } catch (\Throwable $e) {
+            return response()->json(['msg' => $e->getMessage(), 400]);
+        }
     }
 }
