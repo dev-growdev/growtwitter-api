@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Log;
 class AuthController extends Controller
 {
 
-    public function index() {}
+    public function index()
+    {
+    }
 
 
     public function store(Request $request)
@@ -21,7 +23,7 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->withCount("posts")->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json(['success' => false, 'msg' => 'Verificar email ou senha.'], 401);
@@ -30,10 +32,14 @@ class AuthController extends Controller
             $user->tokens()->delete();
             $token = $user->createToken($user->email)->plainTextToken;
 
-            return response()->json(['success' => true, 'msg' => "Login efetuado com sucesso", 'data' => [
-                'user' => $user,
-                'token' => $token
-            ]], 200);
+            return response()->json([
+                'success' => true,
+                'msg' => "Login efetuado com sucesso",
+                'data' => [
+                    'user' => $user,
+                    'token' => $token
+                ]
+            ], 200);
         } catch (\Throwable $th) {
             Log::error('Erro ao fazer login', ['error' => $th->getMessage()]);
             return response()->json(['success' => false, 'msg' => "Erro ao logar"], 400);
@@ -41,7 +47,9 @@ class AuthController extends Controller
     }
 
 
-    public function show(string $token) {}
+    public function show(string $token)
+    {
+    }
 
 
     public function update(Request $request, string $id)

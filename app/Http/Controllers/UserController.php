@@ -14,7 +14,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::with('posts')->findOrFail(auth()->user()->id);
+        $user = User::with([
+            'posts',
+        ])->withCount("posts")->findOrFail(auth()->user()->id);
         return response()->json(['success' => 'true', 'msg' => 'Usuário autenticado', 'data' => $user]);
     }
     public function store(Request $request)
@@ -84,7 +86,7 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'nullable|string|max:255',
                 'surname' => 'nullable|string|max:255',
-                'username' => ['nullable', 'string', 'max:30', 'min:5', 'regex:/^[\w]+$/',  Rule::unique('users')->ignore($id)],
+                'username' => ['nullable', 'string', 'max:30', 'min:5', 'regex:/^[\w]+$/', Rule::unique('users')->ignore($id)],
                 'avatar_url' => 'string|nullable',
             ], [
 
