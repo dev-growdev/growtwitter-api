@@ -45,11 +45,16 @@ class RetweetController extends Controller
     public function destroy(string $id)
     {
         try {
+            $authUserId = auth()->user()->id;
             $retweet = Retweet::where('id', $id)->first();
 
             if ($retweet) {
-                $retweet->delete();
-                return response()->json(['msg' => "Retweet $retweet->id excluído"], 200);
+                if ($authUserId === $retweet->userId) {
+                    $retweet->delete();
+                    return response()->json(['msg' => "Retweet $retweet->id excluído"], 200);
+                } else {
+                    return response()->json(['msg' => "Esse retweet não é seu, seu jaguara"], 400);
+                }
             }
         } catch (\Throwable $e) {
             return response()->json(['msg' => $e->getMessage(), 400]);
