@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follower;
+use App\Models\Post;
+use App\Models\Retweet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,7 +52,34 @@ class FollowerController extends Controller
         $osQueEuSigoData = Follower::with('follower', 'following', 'posts')->where('followerId', $id)->get();
         $quemSegueEleData = Follower::with('following', 'follower', 'posts')->where('followingId', $id)->get();
 
-        return response()->json(['success' => true, 'msg' => "Lista de quem eu sigo e me segue", 'followings' => $osQueEuSigo, 'followers' => $quemSegueEle, 'followingsData' => $osQueEuSigoData, 'followersData' => $quemSegueEleData], 200);
+
+        $posts = Post::with([
+            'user:id,username,name,avatar_url',
+            'likes',
+            'retweets',
+            'comments' => function ($query) {
+                $query->with('user'); // carregar o usuário que fez o comentário
+            }
+        ])
+            ->withCount('likes', 'comments')
+            ->latest()->paginate(20);
+
+
+        $retweets = Retweet::with([
+            'user',
+            'post' => function ($query) {
+                $query->with([
+                    'user:id,username,name,avatar_url',
+                    'likes',
+                    'retweets',
+                    'comments' => function ($query) {
+                        $query->with('user'); // carregar o usuário que fez o comentário
+                    }
+                ])->withCount('likes', 'comments');
+            }
+        ])->latest()->paginate(20);
+
+        return response()->json(['success' => true, 'msg' => "Lista de quem eu sigo e me segue", 'followings' => $osQueEuSigo, 'followers' => $quemSegueEle, 'followingsData' => $osQueEuSigoData, 'followersData' => $quemSegueEleData, 'posts' => $posts, 'retweets' => $retweets], 200);
     }
 
 
