@@ -17,9 +17,6 @@ class PostController extends Controller
 
     public function index()
     {
-
-
-
         $posts = Cache::remember($this->cacheKey, $this->cacheDuration, function () {
             return Post::with(['user:id,username,name,avatar_url', 'likes', 'retweets', 'comments' => function ($query) {
                 $query->with('user'); // carregar o usuário que fez o comentário

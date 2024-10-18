@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follower;
 use App\Models\Post;
 use App\Models\Retweet;
 
@@ -15,23 +16,37 @@ class HomeController extends Controller
             'likes',
             'retweets',
             'comments' => function ($query) {
-                $query->with('user'); // carregar o usuário que fez o comentário
+                $query->with('user');
             }
         ])
             ->withCount('likes', 'comments')
+
+            ->with(['user' => function ($query) {
+                $query->with(['followers', 'followings']);
+            }])
+
             ->latest()->paginate(20);
 
+        $retweets = Retweet::with([
+            'user',
+            'post' => function ($query) {
+                $query->with([
+                    'user:id,username,name,avatar_url',
+                    'likes',
+                    'retweets',
+                    'comments' => function ($query) {
+                        $query->with('user');
+                    }
+                ])->withCount('likes', 'comments');
 
-        $retweets = Retweet::with(['user', 'post' => function ($query) {
-            $query->with([
-                'user:id,username,name,avatar_url',
-                'likes',
-                'retweets',
-                'comments' => function ($query) {
-                    $query->with('user'); // carregar o usuário que fez o comentário
-                }
-            ])->withCount('likes', 'comments');
-        }])->latest()->paginate(20);
+            }
+        ])
+
+        ->with(['user' => function ($query) {
+            $query->with(['followers', 'followings']);
+        }])
+
+        ->latest()->paginate(20);
 
         return response()->json([
             'success' => true,
