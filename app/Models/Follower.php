@@ -25,7 +25,7 @@ class Follower extends Model
     }
     public function posts()
     {
-        return $this->hasMany(Post::class, 'userId', 'followingId')->with(['likes', 'retweets', 'user'])->withCount('likes');
+        return $this->hasMany(Post::class, 'userId', 'followingId')->with(['likes', 'retweets', 'user', 'comments'])->withCount(['likes', 'comments']);
     }
 
 }

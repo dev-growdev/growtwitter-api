@@ -21,8 +21,8 @@ class PostController extends Controller
             return Post::with(['user:id,username,name,avatar_url', 'likes', 'retweets', 'comments' => function ($query) {
                 $query->with('user'); // carregar o usuário que fez o comentário
             }])
-            ->withCount('likes', 'comments')
-            ->latest()->get();
+                ->withCount('likes', 'comments')
+                ->latest()->get();
         });
 
 
@@ -100,15 +100,22 @@ class PostController extends Controller
 
     public function destroy(string $id)
     {
+
         try {
-            $post = Post::findOrFail($id);
-            $post->delete();
+            $authUserId = auth()->user()->id;
+            $tweet = Post::where('id', $id)->first();
 
-            Cache::forget($this->cacheKey);
-
-            return response()->json(['success' => true, 'msg' => 'Post nº ' . $id . ' excluído com sucesso!']);
-        } catch (\Throwable $th) {
-            return response()->json(['success' => false, 'msg' => $th->getMessage()], 400);
+            if ($tweet) {
+                if ($authUserId === $tweet->userId) {
+                    $tweet->delete();
+                    Cache::forget($this->cacheKey);
+                    return response()->json(['msg' => "Retweet $tweet->id excluído"], 200);
+                } else {
+                    return response()->json(['msg' => "Esse tweet não é seu, seu jaguara"], 400);
+                }
+            }
+        } catch (\Throwable $e) {
+            return response()->json(['msg' => $e->getMessage(), 400]);
         }
     }
 }
