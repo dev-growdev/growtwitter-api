@@ -88,6 +88,7 @@ class UserController extends Controller
                 'surname' => 'nullable|string|max:255',
                 'username' => ['nullable', 'string', 'max:30', 'min:5', 'regex:/^[\w]+$/', Rule::unique('users')->ignore($id)],
                 'avatar_url' => 'string|nullable',
+                'cover_url' => 'string|nullable',
             ], [
 
                 'username.string' => 'O nome de usuário deve ser uma string.',
@@ -105,12 +106,16 @@ class UserController extends Controller
                 'surname.max' => 'O campo sobrenome não pode ter mais de 255 caracteres.',
 
                 'avatar_url.string' => 'Avatar deve ser do tipo string.',
+                'cover_url.string' => 'Cover deve ser do tipo string.',
             ]);
 
             $user = User::findOrFail($id);
 
             if ($request->has('avatar_url')) {
                 $user->avatar_url = $request->avatar_url;
+            }
+            if ($request->has('cover_url')) {
+                $user->cover_url = $request->cover_url;
             }
 
             $user->fill([
