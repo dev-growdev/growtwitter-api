@@ -16,6 +16,8 @@ Route::middleware(['throttle:10'])->group(function () {
     Route::post('/users', [UserController::class, 'store']); // registrar
     Route::post('/login', [AuthController::class, 'store']); // logar
     Route::post('/reset', [UserController::class, 'resetPassword']);
+    Route::get('/words', [PostController::class, 'wordFrequency']);
+    Route::post('/search', [HomeController::class, 'searchTweets']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
