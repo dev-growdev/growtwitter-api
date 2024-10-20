@@ -140,7 +140,7 @@ class PostController extends Controller
                     if (!array_key_exists($word, $words)) {
                         $words[$word] = [
                             'count' => 1,
-                            'first_occurrence' => $tweet->created_at->toDateTimeString()
+                            'first_occurrence' => $tweet->created_at->format('Y-m-d\TH:i:s.u\Z')
                         ];
                     } else {
                         $words[$word]['count']++;
@@ -162,4 +162,5 @@ class PostController extends Controller
 
         return response()->json($result);
     }
+
 }
