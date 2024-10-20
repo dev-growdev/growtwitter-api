@@ -126,7 +126,19 @@ class UserController extends Controller
             return response()->json(['success' => 'false', 'msg' => $th->getMessage()]);
         }
     }
+    public function resetPassword(Request $request)
+    {
 
+        try {
+
+            $user = User::where('email', $request->email)->first();
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return response()->json(['success' => 'true', 'msg' => 'Senha alterada com sucesso', 'data' => $user]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 'false', 'msg' => $th->getMessage()]);
+        }
+    }
     public function destroy(string $id)
     {
         try {
