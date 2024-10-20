@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -18,9 +19,14 @@ class PostController extends Controller
     public function index()
     {
         $posts = Cache::remember($this->cacheKey, $this->cacheDuration, function () {
-            return Post::with(['user:id,username,name,avatar_url', 'likes', 'retweets', 'comments' => function ($query) {
-                $query->with('user'); // carregar o usuário que fez o comentário
-            }])
+            return Post::with([
+                'user:id,username,name,avatar_url',
+                'likes',
+                'retweets',
+                'comments' => function ($query) {
+                    $query->with('user'); // carregar o usuário que fez o comentário
+                }
+            ])
                 ->withCount('likes', 'comments')
                 ->latest()->get();
         });
@@ -118,4 +124,43 @@ class PostController extends Controller
             return response()->json(['msg' => $e->getMessage(), 400]);
         }
     }
+
+    public function wordFrequency()
+    {
+        $tweets = Post::where('created_at', '>=', Carbon::now()->subDay())->get();
+        $words = [];
+
+        foreach ($tweets as $tweet) {
+            $content = strtolower($tweet->content);
+            $content = preg_replace('/[^a-z0-9 ]/', '', $content);
+            $contentWords = explode(' ', $content);
+
+            foreach ($contentWords as $word) {
+                if (strlen($word) >= 4) {
+                    if (!array_key_exists($word, $words)) {
+                        $words[$word] = [
+                            'count' => 1,
+                            'first_occurrence' => $tweet->created_at->format('Y-m-d\TH:i:s.u\Z')
+                        ];
+                    } else {
+                        $words[$word]['count']++;
+                    }
+                }
+            }
+        }
+
+        arsort($words);
+        $topWords = array_slice($words, 0, 10, true);
+
+        $result = [];
+        foreach ($topWords as $word => $data) {
+            $result[$word] = [
+                'count' => $data['count'],
+                'first_occurrence' => $data['first_occurrence']
+            ];
+        }
+
+        return response()->json($result);
+    }
+
 }

@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['throttle:10'])->group(function () {
     Route::post('/users', [UserController::class, 'store']); // registrar
     Route::post('/login', [AuthController::class, 'store']); // logar
+    Route::post('/reset', [UserController::class, 'resetPassword']);
+    Route::get('/words', [PostController::class, 'wordFrequency']);
+    Route::post('/search', [HomeController::class, 'searchTweets']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -27,4 +30,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/comment', CommentController::class);
     Route::apiResource('/profile', ProfileController::class);
     Route::apiResource('/home', HomeController::class);
+
 });
