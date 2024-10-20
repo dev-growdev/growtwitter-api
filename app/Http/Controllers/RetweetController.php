@@ -12,7 +12,15 @@ class RetweetController extends Controller
 
     public function index()
     {
-        $retweet = Retweet::with(["user", "post"])->latest()->get();
+        $retweet = Retweet::with(["user", "post"])
+
+        ->with([
+            'user' => function ($query) {
+                $query->with(['followers', 'followings']);
+            }
+        ])
+
+        ->latest()->get();
         return response()->json(['success' => true, 'data' => $retweet]);
     }
 
@@ -29,6 +37,7 @@ class RetweetController extends Controller
             "postId" => $request->postId,
             "content" => $request->content
         ]);
+
         return response()->json(['success' => true, 'msg' => 'Retweetado com sucesso!', 'data' => $retweet], 201);
     }
 
