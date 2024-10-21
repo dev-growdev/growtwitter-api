@@ -18,7 +18,7 @@
 
 Para explicar certamente cada parte das novas controllers aqui vai um guia para não termos apenas um grande objeto como retorno e sem explicação.
 
-Sempre que houver algum destes objetos no retorno, assimile estes tipos:
+Sempre que houver algum destes objetos no retorno exemplo: `"user":{ ... }`. Assimile estes tipos:
 
 <a name="objeto-user"></a>
 
