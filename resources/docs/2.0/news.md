@@ -85,7 +85,7 @@ O `Rate Limiter` é um mecanismo utilizado para limitar o número de requisiçõ
 
 ## Como utilizar o Rate Limiter nesta aplicação
 
--   Para implementar o rate limiter no Laravel, você pode usar o middleware `ThrottleRequests`. Isso pode ser configurado no arquivo de rotas `@/routes/api.php`.
+-   Para implementar o rate limiter no Laravel, você pode usar o middleware `CustomThrottleMiddleware` ou `web`. Isso pode ser configurado no arquivo de rotas `@/routes/api.php`.
 -   Você pode definir limites globais ou por usuário, especificando o número máximo de requisições permitidas em um intervalo de tempo.
 
 ### Responses
