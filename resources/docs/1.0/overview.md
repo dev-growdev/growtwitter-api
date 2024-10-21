@@ -11,7 +11,7 @@
 
 ## Boas-vindas
 
-Bem vindo a documenta o da API do GrowTwitter, uma API que te permite criar
+Bem vindo a documentação da API do GrowTwitter 1.0! Nossa API que te permite criar
 um clone do Twitter. Aqui você vai encontrar todas as rotas, parâmetros e
 retornos.
 
