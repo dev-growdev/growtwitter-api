@@ -2,6 +2,9 @@
 
     -   [Introdução](/{{route}}/{{version}}/overview)
 
+-   ## Atualizações
+    -   [Novidades](/{{route}}/{{version}}/news)
+  
 -   ## Middlewares
     -   [Throttle Middleware](/{{route}}/{{version}}/middlewares/throttle-middleware)
     -   [CSRF Middleware](/{{route}}/{{version}}/middlewares/csrf-middleware)
